@@ -1,0 +1,64 @@
+
+.ChatBox .message {
+  padding: 12px 16px;
+  border-radius: 18px;
+  max-width: 70%;
+  word-wrap: break-word;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+/* Bot (left) */
+.ChatBox .message.bot {
+  align-self: flex-start;
+  background: #e6e6ff;
+  color: #000;
+}
+
+/* User (right) */
+.ChatBox .message.user {
+  align-self: flex-end;
+  background: var(--primary-color, #6a0eff);
+  color: #fff;
+}
+/* Hover effect */
+.ChatBox .send-btn:hover,
+.ChatBox .mic-btn:hover {
+  background: #5200cc;
+}
+
+/* Positioning send (right) */
+.ChatBox .send-btn {
+  right: 15px;
+}
+
+/* Positioning mic (slightly left of send) */
+.ChatBox .mic-btn {
+  right: 65px;
+}
+
+.chat-footer {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  gap: 8px;
+}
+
+.chat-input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid var(--input-border);
+  border-radius: 8px;
+  background: var(--input-bg);
+  color: var(--text-color);
+}
+
+.icon-button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  background: var(--text-color);
+  color: var(--bg-color);
+  cursor: pointer;
+  font-weight: bold;
+}

@@ -1,0 +1,139 @@
+import { useState, useEffect, useRef } from "react";
+
+const useVoiceChat = ({ onResult, language = "en-US", rate = 1, pitch = 1 } = {}) => {
+  // Speech-to-Text states
+  const [transcript, setTranscript] = useState("");
+  const [isListening, setIsListening] = useState(false);
+  const [sttError, setSttError] = useState(null);
+
+  // Text-to-Speech states
+  const [isSpeaking, setIsSpeaking] = useState(false);
+
+  const recognitionRef = useRef(null);
+
+  // Initialize Speech-to-Text
+  useEffect(() => {
+    if (!("webkitSpeechRecognition" in window || "SpeechRecognition" in window)) {
+      console.warn("Speech recognition not supported in this browser.");
+      setSttError("Speech recognition not supported");
+      return;
+    }
+
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    const recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = language;
+
+    recognition.onstart = () => {
+      setIsListening(true);
+      setSttError(null);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+      if (recognitionRef.current && isListening) {
+        try {
+          recognitionRef.current.start();
+        } catch (err) {
+          console.warn("Speech recognition already running.");
+        }
+      }
+    };
+
+    recognition.onresult = (event) => {
+      let finalTranscript = "";
+      let interimTranscript = "";
+
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const result = event.results[i][0].transcript;
+        if (event.results[i].isFinal) finalTranscript += result;
+        else interimTranscript += result;
+      }
+
+      const combinedTranscript = (finalTranscript + interimTranscript).trim();
+      setTranscript(combinedTranscript);
+      if (onResult) onResult(combinedTranscript);
+    };
+
+    recognition.onerror = (event) => {
+      if (event.error === "no-speech") return;
+      console.error("Speech recognition error:", event.error);
+      setSttError(event.error);
+      setIsListening(false);
+    };
+
+    recognitionRef.current = recognition;
+
+    return () => recognition.stop();
+  }, [onResult, isListening, language]);
+
+  // Start/Stop listening functions
+  const startListening = () => {
+    if (recognitionRef.current && !isListening) {
+      setTranscript("");
+      try {
+        recognitionRef.current.start();
+      } catch (err) {
+        console.warn("Speech recognition already running.");
+      }
+    }
+  };
+
+  const stopListening = () => {
+    if (recognitionRef.current && isListening) {
+      recognitionRef.current.stop();
+    }
+  };
+
+  const resetTranscript = () => setTranscript("");
+
+  // Text-to-Speech function
+  const speak = (text, options = {}) => {
+    if (!window.speechSynthesis) {
+      console.warn("Speech Synthesis not supported");
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = options.lang || language;
+    utterance.rate = options.rate || rate;
+    utterance.pitch = options.pitch || pitch;
+
+    utterance.onstart = () => setIsSpeaking(true);
+    utterance.onend = () => setIsSpeaking(false);
+    utterance.onerror = (e) => {
+      console.error("Speech synthesis error:", e.error);
+      setIsSpeaking(false);
+    };
+
+    window.speechSynthesis.speak(utterance);
+  };
+
+  const stopSpeaking = () => {
+    if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+    }
+  };
+
+  return {
+    // Speech-to-Text
+    transcript,
+    startListening,
+    stopListening,
+    resetTranscript,
+    isListening,
+    sttError,
+    // Text-to-Speech
+    speak,
+    stopSpeaking,
+    isSpeaking,
+  };
+};
+
+export default useVoiceChat;

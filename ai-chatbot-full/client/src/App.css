@@ -1,0 +1,90 @@
+
+body.light {
+  --bg-color: #f5f5f5;
+  --text-color: #111;
+  --card-bg: #fff;
+  --input-bg: #fff;
+  --input-border: #ccc;
+}
+
+body.dark {
+  --bg-color: #111;
+  --text-color: #f5f5f5;
+  --card-bg: #1a1a1a;
+  --input-bg: #333;
+  --input-border: #555;
+}
+:root {
+  --bg-color: #f1eef3;
+  --card-bg: rgba(255, 255, 255, 0.5);
+  --text-color: #000;
+}
+
+* { box-sizing: border-box; 
+  margin: 0; 
+  padding: 0; 
+}
+/* Base body */
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  background: var(--bg-color);
+  color: var(--text-color);
+  font-family: "Poppins", sans-serif;
+  transition: background 0.4s ease, color 0.4s ease;
+  /* REMOVE flex here */
+}
+
+.app-container {
+  width: 100%;
+  max-width: 600px;
+  height: 90vh;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+
+  color: var(--text-color);
+  position: relative;
+  overflow-y: auto;
+}
+
+.app-header {
+  text-align: center;
+  padding: 1rem;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+.app-wrapper {
+  display: flex;
+  justify-content: center;  /* horizontal center */
+  align-items: center;      /* vertical center */
+  min-height: 100vh;
+  background-color: #fff;
+   }
+
+.app-title { 
+  font-size: 2rem; 
+  font-weight: bold;
+  color: #090909; 
+  text-align: center; }
+
+
+.theme-toggle {
+  position: fixed; 
+  top: 15px;
+  left: 15px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-color);
+  font-size: 1.4rem;
+  z-index: 1000; 
+}
+
