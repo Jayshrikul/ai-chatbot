@@ -14,7 +14,7 @@ function App() {
     const newMessages = [...messages, { text: message, sender: "user" }];
     setMessages(newMessages);
 
-    const res = await fetch("http://localhost:5000/api/chat", {
+   const res = await fetch("/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message }),
