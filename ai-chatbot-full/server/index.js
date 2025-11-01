@@ -2,8 +2,12 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import path from "path";
+import { fileURLToPath } from "url";
 
-dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+dotenv.config({ path: path.join(__dirname, ".env") });
 
 if (!process.env.GEMINI_API_KEY) {
   console.error("❌ ERROR: GEMINI_API_KEY is missing in your .env file.");
@@ -18,12 +22,11 @@ app.use(express.json());
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
-// Test route
+// Routes
 app.get("/", (req, res) => {
   res.send("AI Chatbot Server is running ✅");
 });
 
-// Chat route
 app.post("/api/chat", async (req, res) => {
   try {
     const { message } = req.body;
@@ -38,5 +41,11 @@ app.post("/api/chat", async (req, res) => {
   }
 });
 
-// ✅ Export app instead of listening
+// ✅ Export for Vercel
 export default app;
+
+// ✅ Start server locally (only when run directly, not in Vercel)
+if (process.env.NODE_ENV !== "production") {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => console.log(`✅ Server running locally on http://localhost:${PORT}`));
+}
