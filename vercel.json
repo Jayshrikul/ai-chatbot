@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "server/index.js", "use": "@vercel/node" },
+    { "src": "ai-chatbot-full/vite.config.js", "use": "@vercel/static-build" }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/server/index.js" },
+    { "src": "/(.*)", "dest": "/ai-chatbot-full/dist/$1" }
+  ],
+  "buildCommand": "cd ai-chatbot-full && npm install && npm run build",
+  "outputDirectory": "ai-chatbot-full/dist",
+  "framework": "vite"
+}
