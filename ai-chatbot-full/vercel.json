@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "ai-chatbot-full/client/package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "ai-chatbot-full/client/dist" }
+    }
+  ],
+  "routes": [
+    { "src": "/(.*)", "dest": "ai-chatbot-full/client/dist/$1" }
+  ]
+}
