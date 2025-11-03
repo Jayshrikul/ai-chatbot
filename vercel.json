@@ -2,17 +2,18 @@
   "version": 2,
   "builds": [
     {
-      "src": "client/vite.config.js",
-      "use": "@vercel/static-build",
-      "config": { "distDir": "client/dist" }
+      "src": "ai-chatbot-full/server/index.js",
+      "use": "@vercel/node"
     },
     {
-      "src": "server/index.js",
-      "use": "@vercel/node"
+      "src": "ai-chatbot-full/client/vite.config.js",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "ai-chatbot-full/client/dist" }
     }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "server/index.js" },
-    { "src": "/(.*)", "dest": "client/dist/$1" }
+    { "src": "/api/(.*)", "dest": "ai-chatbot-full/server/index.js" },
+    { "src": "/(.*)", "dest": "ai-chatbot-full/client/dist/$1" }
   ]
 }
+

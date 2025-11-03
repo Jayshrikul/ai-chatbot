@@ -1,16 +1,20 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-export async function sendMessageToAI(message) {
+export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
+
+  const { message } = req.body;
   try {
-    const response = await fetch("/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message }),
-    });
-    const data = await response.json();
-    return data.reply || "No response from AI.";
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const result = await model.generateContent(message);
+    const reply = await result.response.text();
+
+    res.status(200).json({ reply });
   } catch (error) {
-    console.error("Chat Error:", error);
-    return "Something went wrong. Please try again.";
+    console.error("Chat API Error:", error);
+    res.status(500).json({ error: "AI request failed" });
   }
 }
